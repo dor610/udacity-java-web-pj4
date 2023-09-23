@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import java.util.List;
 
+import com.example.demo.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,7 @@ import com.example.demo.model.persistence.repositories.OrderRepository;
 import com.example.demo.model.persistence.repositories.UserRepository;
 
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping(Constant.APIUri.ORDER_API)
 public class OrderController {
 	
 	
@@ -29,7 +30,7 @@ public class OrderController {
 	private OrderRepository orderRepository;
 	
 	
-	@PostMapping("/submit/{username}")
+	@PostMapping(Constant.APIUri.ORDER_API_SUBMIT)
 	public ResponseEntity<UserOrder> submit(@PathVariable String username) {
 		User user = userRepository.findByUsername(username);
 		if(user == null) {
@@ -40,7 +41,7 @@ public class OrderController {
 		return ResponseEntity.ok(order);
 	}
 	
-	@GetMapping("/history/{username}")
+	@GetMapping(Constant.APIUri.ORDER_API_GET_ORDER_FOR_USER)
 	public ResponseEntity<List<UserOrder>> getOrdersForUser(@PathVariable String username) {
 		User user = userRepository.findByUsername(username);
 		if(user == null) {

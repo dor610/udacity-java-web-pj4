@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import com.example.demo.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ import com.example.demo.model.persistence.repositories.UserRepository;
 import com.example.demo.model.requests.ModifyCartRequest;
 
 @RestController
-@RequestMapping("/api/cart")
+@RequestMapping(Constant.APIUri.CART_API)
 public class CartController {
 	
 	@Autowired
@@ -32,8 +33,8 @@ public class CartController {
 	@Autowired
 	private ItemRepository itemRepository;
 	
-	@PostMapping("/addToCart")
-	public ResponseEntity<Cart> addTocart(@RequestBody ModifyCartRequest request) {
+	@PostMapping(Constant.APIUri.CART_API_ADD_TO_CART)
+	public ResponseEntity<Cart> addToCart(@RequestBody ModifyCartRequest request) {
 		User user = userRepository.findByUsername(request.getUsername());
 		if(user == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -49,8 +50,8 @@ public class CartController {
 		return ResponseEntity.ok(cart);
 	}
 	
-	@PostMapping("/removeFromCart")
-	public ResponseEntity<Cart> removeFromcart(@RequestBody ModifyCartRequest request) {
+	@PostMapping(Constant.APIUri.CART_API_REMOVE_FROM_CART)
+	public ResponseEntity<Cart> removeFromCart(@RequestBody ModifyCartRequest request) {
 		User user = userRepository.findByUsername(request.getUsername());
 		if(user == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

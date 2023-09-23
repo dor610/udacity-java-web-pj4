@@ -1,8 +1,9 @@
 package com.example.demo.controllers;
 
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.service.UserService;
+import com.example.demo.util.Constant;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,42 +13,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.model.persistence.Cart;
 import com.example.demo.model.persistence.User;
-import com.example.demo.model.persistence.repositories.CartRepository;
-import com.example.demo.model.persistence.repositories.UserRepository;
 import com.example.demo.model.requests.CreateUserRequest;
 
-@RestController
-@RequestMapping("/api/user")
-public class UserController {
-	
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private CartRepository cartRepository;
+import javax.validation.Valid;
 
-	@GetMapping("/id/{id}")
+@RestController
+@RequestMapping(Constant.APIUri.USER_API)
+public class UserController {
+
+	private final UserService userService;
+
+	public UserController(UserService userService) {
+		this.userService = userService;
+	}
+
+	@GetMapping(Constant.APIUri.USER_API_FIND_BY_ID)
+	@JsonView(User.class)
 	public ResponseEntity<User> findById(@PathVariable Long id) {
-		return ResponseEntity.of(userRepository.findById(id));
+		return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
 	}
 	
-	@GetMapping("/{username}")
+	@GetMapping(Constant.APIUri.USER_API_FIND_BY_USERNAME)
+	@JsonView(User.class)
 	public ResponseEntity<User> findByUserName(@PathVariable String username) {
-		User user = userRepository.findByUsername(username);
+		User user = userService.findByUserName(username);
 		return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(user);
 	}
 	
-	@PostMapping("/create")
-	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
+	@PostMapping(Constant.APIUri.USER_API_CREATE)
+	@JsonView(User.class)
+	public ResponseEntity<User> createUser(@RequestBody @Valid CreateUserRequest createUserRequest) throws Exception {
+		if (!createUserRequest.getPassword().equals(createUserRequest.getConfPassword()))
+			throw new Exception(Constant.Message.PASSWORDS_DO_NOT_MATCH);
 		User user = new User();
 		user.setUsername(createUserRequest.getUsername());
-		Cart cart = new Cart();
-		cartRepository.save(cart);
-		user.setCart(cart);
-		userRepository.save(user);
-		return ResponseEntity.ok(user);
+		user.setPassword(createUserRequest.getPassword());
+		return ResponseEntity.ok(userService.createUser(user));
 	}
 	
 }
