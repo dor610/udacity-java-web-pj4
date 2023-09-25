@@ -17,6 +17,7 @@ import com.example.demo.model.persistence.User;
 import com.example.demo.model.requests.CreateUserRequest;
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(Constant.APIUri.USER_API)
@@ -31,7 +32,8 @@ public class UserController {
 	@GetMapping(Constant.APIUri.USER_API_FIND_BY_ID)
 	@JsonView(User.class)
 	public ResponseEntity<User> findById(@PathVariable Long id) {
-		return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
+		User user = userService.findById(id);
+		return Objects.isNull(user) ? new ResponseEntity<>(null, HttpStatus.NOT_FOUND) : new ResponseEntity<>(user, HttpStatus.OK);
 	}
 	
 	@GetMapping(Constant.APIUri.USER_API_FIND_BY_USERNAME)
