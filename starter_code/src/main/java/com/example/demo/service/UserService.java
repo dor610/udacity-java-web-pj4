@@ -7,6 +7,8 @@ import com.example.demo.model.persistence.repositories.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class UserService {
 
@@ -32,6 +34,7 @@ public class UserService {
 
     public User createUser(User user) {
         Cart cart = new Cart();
+        cart.setTotal(BigDecimal.valueOf(0));
         cartRepository.save(cart);
         user.setCart(cart);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
