@@ -14,7 +14,7 @@ import java.util.Objects;
 public class Common {
     public static CreateUserRequest createUserRequestObject() {
         CreateUserRequest createUserRequest = new CreateUserRequest();
-        createUserRequest.setUsername(TestConstant.User.USERNAME + Math.floor(Math.random()*10000));
+        createUserRequest.setUsername(TestConstant.User.USERNAME + System.currentTimeMillis());
         createUserRequest.setPassword(TestConstant.User.PASSWORD);
         createUserRequest.setConfPassword(TestConstant.User.PASSWORD);
         return createUserRequest;
