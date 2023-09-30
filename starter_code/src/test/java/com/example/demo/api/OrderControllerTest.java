@@ -2,7 +2,7 @@ package com.example.demo.api;
 
 import com.example.demo.model.persistence.User;
 import com.example.demo.model.persistence.UserOrder;
-import com.example.demo.model.requests.CreateUserRequest;
+import com.example.demo.util.Common;
 import com.example.demo.util.Constant;
 import com.example.demo.util.TestConstant;
 import org.junit.After;
@@ -17,10 +17,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,8 +38,8 @@ public class OrderControllerTest {
 
     @Before
     public void prepareTestData() {
-        this.user = createUser(testRestTemplate, port);
-        this.token = login(user.getUsername(), testRestTemplate, port);
+        this.user = Common.createUser(testRestTemplate, port);
+        this.token = Common.login(user.getUsername(), testRestTemplate, port);
         this.headers = new HttpHeaders();
         this.headers.add("Content-Type", "application/json");
         this.headers.add("Authorization", token);
@@ -104,34 +101,5 @@ public class OrderControllerTest {
             HttpMethod.POST,
             new HttpEntity<>(headers),
             UserOrder.class);
-    }
-    private CreateUserRequest createUserRequestObject() {
-        CreateUserRequest createUserRequest = new CreateUserRequest();
-        createUserRequest.setUsername(TestConstant.User.USERNAME + System.currentTimeMillis());
-        createUserRequest.setPassword(TestConstant.User.PASSWORD);
-        createUserRequest.setConfPassword(TestConstant.User.PASSWORD);
-        return createUserRequest;
-    }
-
-    private User createUser(TestRestTemplate testRestTemplate, int port) {
-        ResponseEntity<User> response = testRestTemplate.exchange(
-                TestConstant.URL.BASE + port + Constant.APIUri.USER_API + Constant.APIUri.USER_API_CREATE,
-                HttpMethod.POST,
-                new HttpEntity<>(createUserRequestObject()),
-                User.class);
-        return response.getBody();
-    }
-
-    private String login(String userName, TestRestTemplate testRestTemplate, int port) {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", userName);
-        input.put("password", TestConstant.User.PASSWORD);
-        ResponseEntity<Object> response = testRestTemplate.exchange(
-                TestConstant.URL.BASE + port + Constant.Security.LOGIN_URL,
-                HttpMethod.POST,
-                new HttpEntity<>(input),
-                Object.class);
-        String token = Objects.requireNonNull(response.getHeaders().get("Authorization")).get(0);
-        return token != null? token : "";
     }
 }
