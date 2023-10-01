@@ -47,6 +47,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))
                 .addFilter(new JWTAuthenticationVerificationFilter(authenticationManager()))
+                .exceptionHandling().authenticationEntryPoint((request, response, e) ->
+                {
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                }).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
     }
 
