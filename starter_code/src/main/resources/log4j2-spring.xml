@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%style{%d{ISO8601}} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{10}}{bright,yellow}: %msg%n%throwable" />
+        </Console>
+        <SplunkHttp
+                name="upj4"
+                url="http://localhost:8088"
+                token="3c753edc-d949-43b7-ac0a-d21a1c9bca1b"
+                host="localhost"
+                index="upj4"
+                type="raw"
+                source="upj4"
+                sourcetype="log4j"
+                messageFormat="text"
+                disableCertificateValidation="true">
+            <PatternLayout pattern="%m" />
+        </SplunkHttp>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="upj4" />
+        </Root>
+    </Loggers>
+</Configuration>

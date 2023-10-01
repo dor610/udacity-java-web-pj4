@@ -12,7 +12,6 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 
 
 @Entity
@@ -21,14 +20,13 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonView(User.class)
 	private long id;
 	
 	@Column(nullable = false, unique = true)
-	@JsonView(User.class)
 	private String username;
 
 	@Column(nullable = false)
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 	
 	@OneToOne(cascade = CascadeType.ALL)
