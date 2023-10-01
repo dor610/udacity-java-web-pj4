@@ -17,7 +17,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -47,12 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))
                 .addFilter(new JWTAuthenticationVerificationFilter(authenticationManager()))
-                .exceptionHandling().authenticationEntryPoint((request, response, e) ->
-                {
-                    response.setContentType("application/json;charset=UTF-8");
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                }).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
+                .exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override
